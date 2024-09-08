@@ -7,28 +7,9 @@ const CUSTOMERS = ["bag", "bean", "bobo", "btfly", "dino", "ghosty", "gigagantru
 export default function game()
 {
     scene("game", () => {
-
-        let beany = add([
-            sprite("bean", {
-                width: 400,
-            }),
-            pos(width(), height() - 400),
-            anchor("center"),
-            z(gameLayers.BETWEEN_LAYER)
-        ]);
         onClick(() => {
-            let charTween = tween(width(), width()/2, 1.5, (p) => beany.pos.x = p, easings.linear);
-
-            charTween.onEnd(() => {
-                add([
-                    sprite("speech", {
-                        width: width()
-                    }),
-                    pos(0, 0),
-                    z(gameLayers.FRONT_LAYER)
-                ])
-            });
-        })
+            addCustomer(1);
+        });
 
         add([
             sprite("background-back", {
@@ -77,7 +58,7 @@ function addCustomer(day)
 
         while(true)
         {
-            if (chance(items.items[curIndex].rarity / 100))
+            if (chance((items.items[curIndex].rarity * day) / 100))
                 break;
             curIndex = (curIndex + 1) % items.items.length;
         }
@@ -109,7 +90,60 @@ function addCustomer(day)
             add([
                 text(""),
                 color(BLACK),
-                pos(0, height() / 4),
+                z(gameLayers.FRONT_LAYER),
+                anchor("center"),
+                pos(width() / 2, height() / 8),
+                scale(1.5),
+                {
+                    add()
+                    {
+                        let textLoop = loop(0.1, () => {
+                            if (curTextIndex == targetText.length)
+                            {
+                                textLoop.cancel();
+                                return;
+                            }
+                            this.text += targetText[curTextIndex++];
+                            play("blip");
+                        });
+                    }
+                }
+            ])
+        });
+    } else {
+        // you sell to customer
+
+        let customer = add([
+            sprite(customerSprite, {
+                width: 400
+            }),
+            pos(width(), height() - 400),
+            anchor("center"),
+            z(gameLayers.BETWEEN_LAYER)
+        ]);
+
+        let charTween = tween(width(), width()/2, 1.5, (p) => customer.pos.x = p, easings.linear);
+
+        charTween.onEnd(() => {
+            add([
+                sprite("speech", {
+                    width: width()
+                }),
+                pos(0, 0),
+                z(gameLayers.FRONT_LAYER)
+            ]);
+
+            let targetText = "I'd like to buy something.";
+
+            let curTextIndex = 0;
+
+            add([
+                text(""),
+                color(BLACK),
+                z(gameLayers.FRONT_LAYER),
+                anchor("center"),
+                pos(width() / 2, height() / 8),
+                scale(2),
                 {
                     add()
                     {
