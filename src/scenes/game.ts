@@ -10,6 +10,8 @@ let coinAmt;
 
 let withCustomer = false;
 
+let onInfoBox = false;
+
 let curCustomer = null;
 
 let spaceAvailable = 6;
@@ -18,17 +20,33 @@ let inventory = [];
 
 let squares = [];
 
+let curInfoBox = null;
+
 export default function game()
 {
     scene("game", () => {
         onClick(() => {
+            if (!onInfoBox && curInfoBox != null)
+            {
+                destroy(curInfoBox);
+                curInfoBox = null;
+            }
             if (withCustomer)
                 return;
             addCustomer(1);
             withCustomer = true;
         });
+
+        onHoverUpdate("in-box", () => {
+            onInfoBox = true;
+        });
+
+        onHoverEnd("in-box", () => {
+            onInfoBox = false;
+        });
         onUpdate(() => {
             setCursor("default");
+
         })
         onHoverUpdate("clickable", (clickable) => {
             clickable.scale = vec2(1.5);
@@ -102,7 +120,7 @@ export default function game()
             anchor("center"),
             z(gameLayers.UI_LAYER),
             {
-                coins: 50,
+                coins: 500000,
 
                 update()
                 {
@@ -137,7 +155,7 @@ export default function game()
         ]);
 
         otherArrow.onClick(() => {
-            camPos(width() / 2, height() / 2);
+            camPos(center());
         })
 
 
@@ -278,15 +296,23 @@ function addCustomer(day)
                                 ]);
 
                                 clickable.clickBehavior = () => {
-                                    let info = displayInfoBox(items.items[curIndex], vec2(clickable.pos.x + 400, height() / 2), false, true);
-                                    customer.on("resolve-customer", (rigged, payed) => {
+                                    displayInfoBox(items.items[curIndex], vec2(clickable.pos.x + 400, height() / 2), false, true);
+                                    customer.on("resolve-customer", (rigged, payed, buy) => {
                                         if (!withCustomer)
                                             return;
+                                        if (!buy)
+                                        {
+                                            camPos(center());
+                                            spaceAvailable++;
+                                        }
+                                        else 
+                                            spaceAvailable--;
+
                                         if (rigged == 0)
                                         {
                                             withCustomer = false;
-                                            coinAmt.coins -= payed;
-                                            destroy(info);
+                                            coinAmt.coins += (!buy ? -1 : 1) * payed;
+                                            destroy(curInfoBox);
                                             destroy(speechSprite);
 
                                             if (payed > 0 && spaceAvailable > 0)
@@ -295,7 +321,7 @@ function addCustomer(day)
                                                     sprite(items.items[curIndex].sprite, {
                                                         width: 150,
                                                     }),
-                                                    pos(squares[inventory.length].pos),
+                                                    pos(squares[inventory.length].pos.add(0, height())),
                                                     anchor("center"),
                                                     area(),
                                                     "clickable",
@@ -303,7 +329,7 @@ function addCustomer(day)
                                                         add()
                                                         {
                                                             this.onClick(() => {
-                                                                displayInfoBox(items.items[curIndex], vec2(this.pos.x + 400, height() / 2), inventory.length < 4, false);
+                                                                displayInfoBox(items.items[curIndex], vec2(this.pos.x + 400, height() / 2), (inventory.length < 4), false);
                                                             });
                                                         }
                                                     }
@@ -318,7 +344,8 @@ function addCustomer(day)
                                             destroy(clickable);
                                         } else if (rigged == 2) {
                                             withCustomer = false;
-                                            destroy(info);
+                                            if (curInfoBox)
+                                                destroy(curInfoBox);
                                             speechText.text = "You're practically scamming me!";
                                             let charTween = tween(width() / 2, -800, 1, (p) => customer.pos.x = p, easings.linear);
 
@@ -330,8 +357,9 @@ function addCustomer(day)
                                             destroy(clickable);
                                         } else {
                                             withCustomer = false;
-                                            destroy(info);
-                                            coinAmt.coins -= payed;
+                                            if (curInfoBox)
+                                                destroy(curInfoBox);
+                                            coinAmt.coins += (!buy ? -1 : 1) * payed;
                                             speechText.text = "LETS GOOO";
                                             let charTween = tween(width() / 2, -800, 1, (p) => customer.pos.x = p, easings.linear);
 
@@ -416,6 +444,12 @@ function addCustomer(day)
 
 function displayInfoBox(item, position, flipY, buy)
 {
+    if (curInfoBox)
+    {
+        destroy(curInfoBox);
+        curInfoBox = null;
+    }
+    debug.log(flipY)
     if (buy)
     {
         let infoBox = add([
@@ -424,8 +458,12 @@ function displayInfoBox(item, position, flipY, buy)
             }),
             pos(position),
             z(gameLayers.FRONT_LAYER),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
+        
+        curInfoBox = infoBox;
 
         infoBox.flipY = flipY;
 
@@ -434,7 +472,9 @@ function displayInfoBox(item, position, flipY, buy)
             pos(30, -height() / 3),
             color(BLACK),
             scale(1),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
 
         infoBox.add([
@@ -442,7 +482,9 @@ function displayInfoBox(item, position, flipY, buy)
             scale(0.9),
             color(BLACK),
             pos(30, -height() / 5),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
 
         infoBox.add([
@@ -450,7 +492,9 @@ function displayInfoBox(item, position, flipY, buy)
             scale(0.9),
             color(BLACK),
             pos(30, 0),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ])
 
         let textInputBox = infoBox.add([
@@ -460,7 +504,8 @@ function displayInfoBox(item, position, flipY, buy)
             pos(30, 100),
             anchor("center"),
             
-            area()
+            area(),
+            "in-box"
         ]);
 
         let textInputBoxTextWowThisNameIsLong = textInputBox.add([
@@ -468,14 +513,16 @@ function displayInfoBox(item, position, flipY, buy)
             textInput(false, 10),
             pos(0),
             anchor("center"),
-            color(BLACK)
+            color(BLACK),
+            "in-box",
+            area()
         ]);
 
         textInputBox.onClick(() => {
             textInputBoxTextWowThisNameIsLong.hasFocus = true;
         });
 
-        infoBox.add(addButton("submit", vec2(30, 300), () => {
+        let otherFunniButton = infoBox.add(addButton("submit", vec2(30, 300), () => {
             let value = parseInt(textInputBoxTextWowThisNameIsLong.text);
             let rigged = 0;
             if (!value)
@@ -503,9 +550,13 @@ function displayInfoBox(item, position, flipY, buy)
             curCustomer.trigger("resolve-customer", rigged, value);
         }));
 
-        infoBox.add(addButton("don\'t want it", vec2(30, 400), () => {
+        otherFunniButton.use("in-box");
+
+        let funniButton = infoBox.add(addButton("don\'t want it", vec2(30, 400), () => {
             curCustomer.trigger("resolve-customer", 0, 0);
         }));
+
+        funniButton.use("in-box");
 
         return infoBox;
     } else {
@@ -513,10 +564,14 @@ function displayInfoBox(item, position, flipY, buy)
             sprite("info-box", {
                 height: height()
             }),
-            pos(position),
+            pos(position.add(0, height())),
             z(gameLayers.FRONT_LAYER),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
+
+        curInfoBox = infoBox;
 
         infoBox.flipY = flipY;
 
@@ -525,7 +580,9 @@ function displayInfoBox(item, position, flipY, buy)
             pos(30, -height() / 3),
             color(BLACK),
             scale(1),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
 
         infoBox.add([
@@ -533,15 +590,19 @@ function displayInfoBox(item, position, flipY, buy)
             scale(0.9),
             color(BLACK),
             pos(30, -height() / 5),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ]);
 
         infoBox.add([
-            text("You are paying: "),
+            text("You are selling for: "),
             scale(0.9),
             color(BLACK),
             pos(30, 0),
-            anchor("center")
+            anchor("center"),
+            "in-box",
+            area()
         ])
 
         let textInputBox = infoBox.add([
@@ -551,7 +612,8 @@ function displayInfoBox(item, position, flipY, buy)
             pos(30, 100),
             anchor("center"),
             
-            area()
+            area(),
+            "in-box"
         ]);
 
         let textInputBoxTextWowThisNameIsLong = textInputBox.add([
@@ -559,16 +621,38 @@ function displayInfoBox(item, position, flipY, buy)
             textInput(false, 10),
             pos(0),
             anchor("center"),
-            color(BLACK)
+            color(BLACK),
+            "in-box",
+            area()
         ]);
 
         textInputBox.onClick(() => {
             textInputBoxTextWowThisNameIsLong.hasFocus = true;
         });
 
-        infoBox.add(addButton("sell", vec2(30, 300), () => {
-            
+        let funniButton = infoBox.add(addButton("sell", vec2(30, 300), () => {
+            let value = parseInt(textInputBoxTextWowThisNameIsLong.text);
+            let rigged = 0;
+            if (!value)
+                return;
+
+            if (value > coinAmt.coins)
+            {
+                displayMessage("Not enough money.");
+                return;
+            }
+
+            if (value > item.worth + item.worth * 0.1)
+            {
+                rigged = 2;
+            } else if (value < item.worth - item.worth * 0.1)
+            {
+                rigged = 1;
+            }
+            curCustomer.trigger("resolve-customer", rigged, value, buy);
         }));
+
+        funniButton.use("in-box");
 
         return infoBox;
     }
