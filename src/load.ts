@@ -2,7 +2,7 @@ export default function load()
 {
 
     loadBean();
-    
+
     loadSprite("background-back", "sprites/background-back.png");
 
     loadSprite("background-front", "sprites/background-front.png");
@@ -34,4 +34,6 @@ export default function load()
     loadSprite("totem", "sprites/totem.png");
 
     loadSprite("arrow", "sprites/arrow.png");
+
+    loadSprite("speech", "sprites/speech.png");
 }

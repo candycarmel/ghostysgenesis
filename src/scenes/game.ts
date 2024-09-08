@@ -4,17 +4,27 @@ export default function game()
 {
     scene("game", () => {
 
-        let bean = add([
+        let beany = add([
             sprite("bean", {
-                width: 100,
-                height: 100,
+                width: 400,
             }),
-            pos(width(), height() - 200),
+            pos(width(), height() - 400),
             anchor("center"),
             z(gameLayers.BETWEEN_LAYER)
         ]);
+        onClick(() => {
+            let charTween = tween(width(), width()/2, 1.5, (p) => beany.pos.x = p, easings.linear);
 
-        tween(width(), 0, 2, (p) => bean.pos.x = p, easings.linear);
+            charTween.onEnd(() => {
+                add([
+                    sprite("speech", {
+                        width: width()
+                    }),
+                    pos(0, 0),
+                    z(gameLayers.FRONT_LAYER)
+                ])
+            });
+        })
 
         add([
             sprite("background-back", {
@@ -47,6 +57,6 @@ export default function game()
 
 
 
-
+        
     });
 }
