@@ -53,4 +53,7 @@ export default function load()
     loadSprite("gigagantrum", "sprites/customers/gigagantrum.png");
 
     loadSprite("mark", "sprites/customers/mark.png");
+
+
+    loadSound("blip", "sounds/blip.mp3");
 }
