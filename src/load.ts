@@ -39,6 +39,12 @@ export default function load()
 
     loadSprite("info-box", "sprites/infobox.png");
 
+    loadSprite("coin", "sprites/coin.png");
+
+    loadSprite("items-background", "sprites/items-background.png");
+
+    loadSprite("square", "sprites/square.png");
+
     
     loadSprite("bag", "sprites/customers/bag.png");
 
