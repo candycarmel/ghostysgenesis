@@ -57,6 +57,11 @@ export default function game()
 
 
 
-        
+
     });
+}
+
+function addCustomer(day)
+{
+    
 }

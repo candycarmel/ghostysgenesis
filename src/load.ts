@@ -36,4 +36,21 @@ export default function load()
     loadSprite("arrow", "sprites/arrow.png");
 
     loadSprite("speech", "sprites/speech.png");
+
+    
+    loadSprite("bag", "sprites/customers/bag.png");
+
+    loadSprite("bean", "sprites/customers/bean.png");
+
+    loadSprite("bobo", "sprites/customers/bobo.png");
+
+    loadSprite("btfly", "sprites/customers/btfly.png");
+
+    loadSprite("dino", "sprites/customers/dino.png");
+
+    loadSprite("ghosty", "sprites/customers/ghosty.png");
+
+    loadSprite("gigagantrum", "sprites/customers/gigagantrum.png");
+
+    loadSprite("mark", "sprites/customers/mark.png");
 }
