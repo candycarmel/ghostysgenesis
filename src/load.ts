@@ -37,6 +37,8 @@ export default function load()
 
     loadSprite("speech", "sprites/speech.png");
 
+    loadSprite("info-box", "sprites/infobox.png");
+
     
     loadSprite("bag", "sprites/customers/bag.png");
 
