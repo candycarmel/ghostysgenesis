@@ -24,6 +24,8 @@ let curTop = center().sub(12 * 64, 6 * 64).add(center().scale(0.5)).y;
 let curBottom = center().add(12 * 64, 6 * 64).sub(center().scale(0.5)).y;
 let curLeft = center().sub(12 * 64, 6 * 64).add(center().scale(0.5)).x;
 let curRight = center().add(12 * 64, 6 * 64).sub(center().scale(0.5)).x;
+
+let levelsCleared = 0;
 // debug.inspect = true;
 
 let player = add([
@@ -73,9 +75,7 @@ let player = add([
 	}
 ]);
 
-let levelThing = generateLevel(levelPrefs[0]);
-
-addLevel(levelThing, {
+let curLevel = addLevel(generateLevel(levelPrefs[0]), {
 	pos: center().sub(12 * 64, 6 * 64),
 
 	tileWidth: 64,
@@ -102,6 +102,23 @@ player.add([
 	pos(0),
 	cooldown(3, "bean", () => {return isKeyPressed("f")}, homingOrbs, player)
 ]);
+
+player.onCollideEnd("gate", (gate) => {
+	if (player.pos.y < center().sub(12 * 64, 6 * 64).y)
+	{
+		destroy(curLevel);
+
+		player.pos = center();
+		curLevel = addLevel(generateLevel(levelPrefs[++levelsCleared]), {
+			pos: center().sub(12 * 64, 6 * 64),
+
+			tileWidth: 64,
+			tileHeight: 64,
+
+			tiles: levelTiles(player)
+		});
+	}
+});
 
 // onKeyPress("f", () => {
 // 	homingOrbs();
@@ -177,22 +194,22 @@ function generateLevel(levelPrefs)
 					if (chance(enemyChance))
 					{
 						let enemyIndex = -1;
-						while (enemyIndex == -1)
-						{
+
+						while (enemyIndex === -1) {
 							let currentChance = rand();
-							
 							let curChance = 0;
 
-							for (let i = 0; i < spawnerChances.length; i++)
-							{
+							for (let i = 0; i < spawnerChances.length; i++) {
 								let spawnerChance = spawnerChances[i];
-								if (currentChance < curChance + spawnerChance)
-								{
+								curChance += spawnerChance;
+
+								if (currentChance < curChance) {
 									enemyIndex = i;
 									break;
 								}
 							}
 						}
+
 						row += spawners[enemyIndex]; // grave
 					} else {
 						row += "d"; // dirt

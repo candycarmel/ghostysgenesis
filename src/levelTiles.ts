@@ -4,6 +4,8 @@ import shootAtPlayer from "./enemyBehavior/shootAtPlayer";
 export default function levelTiles(player)
 {
     return {
+
+
 		"f": () => [
 			sprite("fence", {
 				width: 64,
@@ -14,6 +16,8 @@ export default function levelTiles(player)
 			body({isStatic: true}),
 			"level-thing"
 		],
+
+
 		"g": () => [
 			sprite("gate", {
 				width: 64,
@@ -43,8 +47,11 @@ export default function levelTiles(player)
 					}
 				}
 			},
-			"level-thing"
+			"level-thing",
+            "gate"
 		],
+
+
 		"b": () => [
             sprite("bones", {
                 width: 64,
@@ -52,26 +59,31 @@ export default function levelTiles(player)
             }),
             pos(0, 0),
             area(),
+            timer(),
             body({isStatic: true}),
             {
                 add()
 				{
 					this.wait(rand(3, 10), () => {
-						add([
+
+                        let position = this.pos.add(center().sub(12 * 64, 6 * 64));
+						let enemy = add([
 							sprite("skeleton", {
-                                anim: "jump"
+                                anim: "jump",
+                                width: 64
                             }),
 							anchor("center"),
-							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+							pos(position),
 							area(),
+                            timer(),
 							moveTowardsPlayer(125, player),
                             shootAtPlayer(player, () => [
                                 sprite("bone", {
                                     width: 50,
-                                    height: 10,
+                                    height: 20,
                                 }),
                                 area(),
-                                pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+                                pos(enemy.pos),
                                 rotate(0),
                                 anchor("center"),
                                 {
@@ -102,6 +114,8 @@ export default function levelTiles(player)
             "bones",
             "level-thing"
 		],
+
+
 		
 		"h": () => [
 			sprite("gate", {
@@ -139,8 +153,11 @@ export default function levelTiles(player)
 					}
 				}
 			},
-			"level-thing"
+			"level-thing",
+            "gate"
 		],
+
+
 		"d": () => [
 			sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
 				width: 64,
@@ -149,6 +166,8 @@ export default function levelTiles(player)
 			pos(0, 0),
 			"level-thing"
 		],
+
+
 		"t": () => [
 			sprite("grave", {
 				width: 64,
@@ -163,7 +182,9 @@ export default function levelTiles(player)
 				{
 					this.wait(rand(3, 15), () => {
 						add([
-							sprite("bean"),
+							sprite("bean", {
+                                width: 64
+                            }),
 							anchor("center"),
 							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
 							area(),
@@ -189,5 +210,7 @@ export default function levelTiles(player)
 			"level-thing",
 			"grave"
 		],
+
+
 	}
 }
