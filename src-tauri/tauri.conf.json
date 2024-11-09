@@ -7,8 +7,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "your_game_name_here",
-    "version": "1.0.0"
+    "productName": "FIGHT",
+    "version": "1.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,11 +20,9 @@
     },
     "windows": [
       {
-        "title": "Your window title here",
-        "width": 800,
-        "height": 600,
-        "maximizable": true,
-        "center": true
+        "title": "GHOST",
+        "maximized": true,
+        "fullscreen": true
       }
     ],
     "security": {
