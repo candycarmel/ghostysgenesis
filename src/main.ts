@@ -8,6 +8,7 @@ import moveTowardsPlayer from "./enemyBehavior/moveTowardsPlayer";
 import cooldown from "./components/cooldown";
 import levelTiles from "./levelTiles";
 import levelPrefs from "./levelPrefs";
+import collectable from "./components/collectable";
 
 kaplay();
 
@@ -42,11 +43,15 @@ let player = add([
 	z(1),
 	"player-collider",
 	{
+		selectedCollectable: null,
+
+		currentlyCollecting: false,
 
 		update()
 		{
 			tween(camPos(), this.pos, 1, (p) => {camPos(clamp(p.x, curLeft, curRight), clamp(p.y, curTop, curBottom));}, easings.easeOutBack);
 			// Handle vertical movement
+
 			if (isKeyDown("w")) {
 				this.acc.y = -PLAYER_ACC;
 				this.vel.y = clamp(-PLAYER_SPEED, this.vel.y, 0);
@@ -88,21 +93,6 @@ let homingOrbs = () => {
 	createHomingOrb(player);
 }
 
-player.add([
-	pos(0),
-	cooldown(1, "sword", () => {return isMousePressed()}, createSword, player)
-]);
-
-player.add([
-	pos(0),
-	cooldown(2, "sword", () => {return isMousePressed()}, createSword, player)
-]);
-
-player.add([
-	pos(0),
-	cooldown(3, "bean", () => {return isKeyPressed("f")}, homingOrbs, player)
-]);
-
 player.onCollideEnd("gate", (gate) => {
 	if (player.pos.y < center().sub(12 * 64, 6 * 64).y)
 	{
@@ -119,6 +109,25 @@ player.onCollideEnd("gate", (gate) => {
 		});
 	}
 });
+
+
+add([
+	pos(center()),
+	sprite("sword"),
+	anchor("center"),
+	collectable({
+		itemName: "Sword",
+
+		spriteName: "sword",
+
+		itemDescription: "A trusty sword! Press lmb to fight your foes!"
+	}, {
+		time: 1,
+		spriteName: "sword",
+		abilityCondition: () => {return isMousePressed()},
+		ability: createSword,
+	}, player)
+])
 
 // onKeyPress("f", () => {
 // 	homingOrbs();

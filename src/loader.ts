@@ -26,6 +26,7 @@ function loadStuffs()
     loadSprite("gate-open", "tiles/level0/gate-open.png");
     loadSprite("grave", "tiles/level0/grave.png");
     loadSprite("bones", "tiles/level0/bones.png");
+    loadSprite("collect", "collect.png");
 
     loadSprite("bone", "enemies/bone.png");
     loadSprite("skeleton", "enemies/skeleton.png", {
