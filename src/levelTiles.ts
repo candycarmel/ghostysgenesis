@@ -1,5 +1,7 @@
 import moveTowardsPlayer from "./enemyBehavior/moveTowardsPlayer";
 import shootAtPlayer from "./enemyBehavior/shootAtPlayer";
+import enemy from "./enemyBehavior/enemy";
+import splitOnDeath from "./enemyBehavior/splitOnDeath";
 
 export default function levelTiles(player)
 {
@@ -67,14 +69,15 @@ export default function levelTiles(player)
 					this.wait(rand(3, 10), () => {
 
                         let position = this.pos.add(center().sub(12 * 64, 6 * 64));
-						let enemy = add([
+						let skeleton = add([
 							sprite("skeleton", {
                                 anim: "jump",
                                 width: 64
                             }),
+							enemy(2),
 							anchor("center"),
 							pos(position),
-							area(),
+							area({scale: 0.8}),
                             timer(),
 							moveTowardsPlayer(125, player),
                             shootAtPlayer(player, () => [
@@ -82,19 +85,33 @@ export default function levelTiles(player)
                                     width: 50,
                                     height: 20,
                                 }),
-                                area(),
-                                pos(enemy.pos),
+                                area({scale: 0.8}),
+                                pos(skeleton.pos),
                                 rotate(0),
                                 anchor("center"),
                                 {
+									add()
+									{
+										this.onCollideUpdate("player-collider", () => {
+											player.hurt();
+										});
+									},
+									
                                     update()
                                     {
                                         this.angle += 360 * dt();
                                     }
                                 }
-                            ], 1.5, 200, false),
+                            ], 3, 200, false),
 							z(1),
-							"enemy",
+							{
+								add()
+								{
+									this.onCollideUpdate("player-collider", () => {
+										player.hurt();
+									});
+								}
+							}
 						]);
 
 						add([
@@ -185,12 +202,134 @@ export default function levelTiles(player)
 							sprite("bean", {
                                 width: 64
                             }),
+							enemy(3),
 							anchor("center"),
 							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
-							area(),
+							area({scale: 0.8}),
 							moveTowardsPlayer(125, player),
 							z(1),
-							"enemy",
+							{
+								add()
+								{
+									this.onCollideUpdate("player-collider", () => {
+										player.hurt();
+									});
+								}
+							},
+						]);
+
+						add([
+							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+								width: 64,
+								height: 64
+							}),
+							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+                            z(-1),
+							"level-thing"
+						]);
+
+						destroy(this);
+					});
+				}
+			},
+			"level-thing",
+			"grave"
+		],
+
+
+		"p": () => [
+			sprite("pile", {
+				width: 64,
+				height: 64
+			}),
+			pos(0, 0),
+			area(),
+			body({isStatic: true}),
+			timer(),
+			{
+				add()
+				{
+					this.wait(rand(3, 15), () => {
+						add([
+							sprite("rat", {
+                                width: 32
+                            }),
+							enemy(1),
+							anchor("center"),
+							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+							area({scale: 0.8}),
+							moveTowardsPlayer(400, player),
+							z(1),
+							{
+								add()
+								{
+									this.onCollideUpdate("player-collider", () => {
+										player.hurt();
+									});
+								}
+							},
+						]);
+
+						add([
+							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+								width: 64,
+								height: 64
+							}),
+							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+                            z(-1),
+							"level-thing"
+						]);
+
+						destroy(this);
+					});
+				}
+			},
+			"level-thing",
+			"grave"
+		],
+
+
+		"o": () => [
+			sprite("hole", {
+				width: 64,
+				height: 64
+			}),
+			pos(0, 0),
+			area(),
+			body({isStatic: true}),
+			timer(),
+			{
+				add()
+				{
+					this.wait(rand(3, 15), () => {
+						add([
+							sprite("bats", {
+                                width: 64,
+								anim: "bats"
+                            }),
+							enemy(3),
+							anchor("center"),
+							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+							area({scale: 0.8}),
+							moveTowardsPlayer(100, player),
+							splitOnDeath(4, () => [
+								sprite("bat", {
+									width: 20,
+									anim: "bat"
+								}),
+								pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
+								area({scale: 0.8}),
+								moveTowardsPlayer(100, player),
+							]),
+							z(1),
+							{
+								add()
+								{
+									this.onCollideUpdate("player-collider", () => {
+										player.hurt();
+									});
+								}
+							},
 						]);
 
 						add([

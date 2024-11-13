@@ -9,6 +9,10 @@ import cooldown from "./components/cooldown";
 import levelTiles from "./levelTiles";
 import levelPrefs from "./levelPrefs";
 import collectable from "./components/collectable";
+import heart from "./components/heart";
+import createAxe from "./abilities/axe";
+import createBow from "./abilities/bow";
+import createDaggers from "./abilities/daggers";
 
 kaplay();
 
@@ -16,10 +20,6 @@ loadStuffs();
 loadBean();
 
 camScale(vec2(2));
-
-const PLAYER_SPEED = 150;
-
-const PLAYER_ACC = 1500;
 
 let curTop = center().sub(12 * 64, 6 * 64).add(center().scale(0.5)).y;
 let curBottom = center().add(12 * 64, 6 * 64).sub(center().scale(0.5)).y;
@@ -29,6 +29,13 @@ let curRight = center().add(12 * 64, 6 * 64).sub(center().scale(0.5)).x;
 let levelsCleared = 0;
 // debug.inspect = true;
 
+let hearts = [];
+
+for (let i = 0; i < 5; i++)
+	hearts.push(add([
+		pos(0, 0),
+		heart(),
+	]));
 let player = add([
 	sprite("ghosty", {
 		anim: "hover",
@@ -37,27 +44,37 @@ let player = add([
 	}),
 	pos(center()),
 	area(),
+	opacity(0.9),
 	body(),
 	anchor("center"),
 	ccbody(),
 	z(1),
 	"player-collider",
 	{
+		PLAYER_SPEED: 150,
+
+		PLAYER_ACC: 1500,
+		
 		selectedCollectable: null,
 
 		currentlyCollecting: false,
 
+		invincibleTimer: 0,
+
+		INVINCIBLE_MAX: 1,
+
 		update()
 		{
+			this.invincibleTimer = clamp(this.invincibleTimer - dt(), 0, 1);
 			tween(camPos(), this.pos, 1, (p) => {camPos(clamp(p.x, curLeft, curRight), clamp(p.y, curTop, curBottom));}, easings.easeOutBack);
 			// Handle vertical movement
 
 			if (isKeyDown("w")) {
-				this.acc.y = -PLAYER_ACC;
-				this.vel.y = clamp(-PLAYER_SPEED, this.vel.y, 0);
+				this.acc.y = -this.PLAYER_ACC;
+				this.vel.y = clamp(-this.PLAYER_SPEED, this.vel.y, 0);
 			} else if (isKeyDown("s")) {
-				this.acc.y = PLAYER_ACC;
-				this.vel.y = clamp(0, this.vel.y, PLAYER_SPEED);
+				this.acc.y = this.PLAYER_ACC;
+				this.vel.y = clamp(0, this.vel.y, this.PLAYER_SPEED);
 			} else {
 				// Apply friction or slow down vertically when no input
 				this.acc.y = 0;
@@ -66,16 +83,38 @@ let player = add([
 
 			// Handle horizontal movement
 			if (isKeyDown("a")) {
-				this.acc.x = -PLAYER_ACC;
-				this.vel.x = clamp(-PLAYER_SPEED, this.vel.x, 0);
+				this.acc.x = -this.PLAYER_ACC;
+				this.vel.x = clamp(-this.PLAYER_SPEED, this.vel.x, 0);
 			} else if (isKeyDown("d")) {
-				this.acc.x = PLAYER_ACC;
-				this.vel.x = clamp(0, this.vel.x, PLAYER_SPEED);
+				this.acc.x = this.PLAYER_ACC;
+				this.vel.x = clamp(0, this.vel.x, this.PLAYER_SPEED);
 			} else {
 				// Apply friction or slow down horizontally when no input
 				this.acc.x = 0;
 				this.vel.x *= 0.95;  // Adjust friction as needed
 			}
+		},
+
+		hurt()
+		{
+			if (this.invincibleTimer > 0)
+				return;
+
+			this.invincibleTimer = this.INVINCIBLE_MAX;
+			hearts.reverse();
+
+			for (let i = 0; i < hearts.length; i++) {
+
+				let heart = hearts[i];
+
+				if (!heart.lost)
+				{
+					heart.hurt();
+					break;
+				}
+			}
+			
+			hearts.reverse();
 		}
 	}
 ]);
@@ -111,6 +150,24 @@ player.onCollideEnd("gate", (gate) => {
 });
 
 
+// add([
+// 	pos(center()),
+// 	sprite("axe"),
+// 	anchor("center"),
+// 	collectable({
+// 		itemName: "Axe",
+
+// 		spriteName: "axe",
+
+// 		itemDescription: "A heavy axe! Low damage, but swings many times to deal massive damage to multiple enemies!"
+// 	}, {
+// 		time: 4,
+// 		spriteName: "axe",
+// 		abilityCondition: () => {return isMousePressed()},
+// 		ability: createAxe,
+// 	}, player)
+// ]);
+
 add([
 	pos(center()),
 	sprite("sword"),
@@ -120,18 +177,17 @@ add([
 
 		spriteName: "sword",
 
-		itemDescription: "A trusty sword! Press lmb to fight your foes!"
+		itemDescription: "A trusty sword! Quick sweeping attack to fight your foes!"
 	}, {
 		time: 1,
 		spriteName: "sword",
 		abilityCondition: () => {return isMousePressed()},
-		ability: createSword,
+		ability: createDaggers,
 	}, player)
-])
-
-// onKeyPress("f", () => {
-// 	homingOrbs();
-// })
+]);
+onKeyPress("f", () => {
+	homingOrbs();
+})
 
 
 // f is fence, g is gate, h is right gate, d is dirt, t is grave
@@ -152,6 +208,8 @@ function generateLevel(levelPrefs)
 
 	if (chances > 1)
 		throw new Error("total spawner chance exceeds 100%");
+	
+	let possibleEnemies = 0;
 
 	main: for (let i = 0; i < 12; i++)
 	{
@@ -200,6 +258,7 @@ function generateLevel(levelPrefs)
 					row += "f"
 				else 
 				{
+					possibleEnemies++;
 					if (chance(enemyChance))
 					{
 						let enemyIndex = -1;
@@ -229,6 +288,5 @@ function generateLevel(levelPrefs)
 			continue main;
 		}
 	}
-
 	return level;
 }

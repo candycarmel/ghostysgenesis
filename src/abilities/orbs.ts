@@ -17,7 +17,7 @@ export default function createHomingOrb(player)
 			add()
 			{
 				this.onCollide("enemy", (enemy) => {
-					destroy(enemy);
+					enemy.health -= 2;
 					destroy(this);
 				});
 
