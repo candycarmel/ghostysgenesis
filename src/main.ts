@@ -23,6 +23,19 @@ kaplay();
 loadStuffs();
 loadBean();
 
+scene("frfrstart", () => {
+	add([
+		text("Click to start!"),
+		pos(center()),
+		anchor("center")
+	]);
+
+	onClick(() => {
+		setFullscreen(true);
+		go("start");
+	})
+})
+
 scene("start", () => {
 
 
@@ -548,7 +561,7 @@ scene("end", (textyyy) => {
 
 
 
-go("start");
+go("frfrstart");
 // MARK: NORMAL STUFF
 
 
