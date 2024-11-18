@@ -23,6 +23,8 @@ kaplay();
 loadStuffs();
 loadBean();
 
+let curMusic = play("music", {loop: true, volume: 0.1});
+
 scene("frfrstart", () => {
 	add([
 		text("Click to start!"),
@@ -38,6 +40,9 @@ scene("frfrstart", () => {
 
 scene("start", () => {
 
+	curMusic.stop()
+
+curMusic = play("music", {loop: true, volume: 0.1});
 
 onUpdate(() => setCursor("default"));
 
@@ -92,10 +97,10 @@ onUpdate(() => setCursor("default"));
 
 
 	add([
-		text("Ghosty's Genesis"),
+		sprite("banner"),
 		scale(2),
 		anchor("center"),
-		color(BLACK),
+		// color(BLACK),
 		pos(width() / 2, 100)
 	]);
 
@@ -109,6 +114,9 @@ onUpdate(() => setCursor("default"));
 
 
 scene("game0", () => {
+	curMusic.stop()
+
+curMusic = play("music", {loop: true, volume: 0.1});
 	setCursor("default");
 	camScale(vec2(2));
 
@@ -265,6 +273,11 @@ scene("game0", () => {
 			{
 				go("cutscene0");
 				return;
+			} else if (levelsCleared == 9)
+			{
+				curMusic.stop()
+
+				curMusic = play("boss", {loop: true, volume: 0.1});
 			}
 
 			if (coffin.exists())
@@ -314,6 +327,9 @@ scene("game0", () => {
 // MARK: NEXT LEVEL
 
 scene("game1", () => {
+	curMusic.stop()
+
+curMusic = play("music", {loop: true, volume: 0.1});
 	camScale(vec2(2));
 
 	let curTop = center().sub(12 * 64, 6 * 64).add(center().scale(0.5)).y;
@@ -445,7 +461,7 @@ scene("game1", () => {
 			{
 				go("cutscene1");
 				return;
-			}
+			} 
 
 			player.pos = center();
 
@@ -468,6 +484,9 @@ scene("game1", () => {
 
 
 scene("cutscene0", () => {
+	curMusic.stop()
+
+curMusic = play("music", {loop: true, volume: 0.1});
 	let background = add([
 		sprite("cutscene0", {
 			height: height() * 1.1,
@@ -495,6 +514,9 @@ scene("cutscene0", () => {
 })
 
 scene("cutscene1", () => {
+	curMusic.stop()
+
+curMusic = play("music", {loop: true, volume: 0.1});
 	let background = add([
 		sprite("cutscene0", {
 			height: height() * 1.1,
@@ -525,6 +547,9 @@ scene("cutscene1", () => {
 
 
 scene("end", (textyyy) => {
+	curMusic.stop()
+
+curMusic = play("boss", {loop: true});
 	onUpdate(() => setCursor("default"));
 
 	add([

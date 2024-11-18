@@ -179,4 +179,9 @@ function loadStuffs()
     // loadSprite("coffin", "tiles/level0/coffin.png")
 
     loadSprite("startscreen", "startscreen.png");
+
+    loadSprite("banner", "banner.png");
+
+    loadSound("music", "music.mp3");
+    loadSound("boss", "boss.mp3");
 }
