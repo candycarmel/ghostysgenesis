@@ -3,13 +3,13 @@ import shootAtPlayer from "./enemyBehavior/shootAtPlayer";
 import enemy from "./enemyBehavior/enemy";
 import splitOnDeath from "./enemyBehavior/splitOnDeath";
 
-export default function levelTiles(player)
+export default function nextLevelTiles(player)
 {
     return {
 
 
 		"f": () => [
-			sprite("fence", {
+			sprite("fence-next", {
 				width: 64,
 				height: 64
 			}),
@@ -21,7 +21,7 @@ export default function levelTiles(player)
 
 
 		"g": () => [
-			sprite("gate", {
+			sprite("gate-next", {
 				width: 64,
 				height: 64
 			}),
@@ -41,7 +41,7 @@ export default function levelTiles(player)
 					{
 						this.alreadyOpened = true;
 						// this.sprite = "gate-open";
-						this.use(sprite("gate-open", {
+						this.use(sprite("gate-open-next", {
 							width: 64,
 							height: 64
 						}));
@@ -55,7 +55,7 @@ export default function levelTiles(player)
 
 
 		"b": () => [
-            sprite("bones", {
+            sprite("bones-next", {
                 width: 64,
                 height: 64
             }),
@@ -71,7 +71,7 @@ export default function levelTiles(player)
 
                         let position = this.pos.add(center().sub(12 * 64, 6 * 64));
 						let skeleton = add([
-							sprite("skeleton", {
+							sprite("skeleton-next", {
                                 anim: "jump",
                                 width: 64
                             }),
@@ -82,7 +82,7 @@ export default function levelTiles(player)
                             timer(),
 							moveTowardsPlayer(125, player),
                             shootAtPlayer(player, () => [
-                                sprite("bone", {
+                                sprite("bone-next", {
                                     width: 50,
                                     height: 20,
                                 }),
@@ -103,7 +103,7 @@ export default function levelTiles(player)
                                         this.angle += 360 * dt();
                                     }
                                 }
-                            ], 3, 200, false),
+                            ], 3, 200, true),
 							z(1),
 							{
 								add()
@@ -116,7 +116,7 @@ export default function levelTiles(player)
 						]);
 
 						add([
-							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+							sprite(chance(0.33) ? "dirt0-next" : chance(0.5) ? "dirt1-next" : "dirt3-next", {
 								width: 64,
 								height: 64
 							}),
@@ -136,7 +136,7 @@ export default function levelTiles(player)
 
 		
 		"h": () => [
-			sprite("gate", {
+			sprite("gate-next", {
 				width: 64,
 				height: 64
 			}),
@@ -162,7 +162,7 @@ export default function levelTiles(player)
 					{
 						this.alreadyOpened = true;
 						// this.sprite = "gate-open";
-						this.use(sprite("gate-open", {
+						this.use(sprite("gate-open-next", {
 							width: 64,
 							height: 64
 						}));
@@ -177,7 +177,7 @@ export default function levelTiles(player)
 
 
 		"d": () => [
-			sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+			sprite(chance(0.33) ? "dirt0-next" : chance(0.5) ? "dirt1-next" : "dirt3-next", {
 				width: 64,
 				height: 64
 			}),
@@ -187,7 +187,7 @@ export default function levelTiles(player)
 
 
 		"t": () => [
-			sprite("grave", {
+			sprite("grave-next", {
 				width: 64,
 				height: 64
 			}),
@@ -201,14 +201,14 @@ export default function levelTiles(player)
 				{
 					this.wait(rand(3, 15), () => {
 						add([
-							sprite("zombean", {
+							sprite("bean", {
                                 width: 64
                             }),
-							enemy(3),
+							enemy(5),
 							anchor("center"),
 							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
 							area({scale: 0.5}),
-							moveTowardsPlayer(125, player),
+							moveTowardsPlayer(200, player, 2),
 							z(1),
 							{
 								add()
@@ -221,7 +221,7 @@ export default function levelTiles(player)
 						]);
 
 						add([
-							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+							sprite(chance(0.33) ? "dirt0-next" : chance(0.5) ? "dirt1-next" : "dirt3-next", {
 								width: 64,
 								height: 64
 							}),
@@ -240,7 +240,7 @@ export default function levelTiles(player)
 
 
 		"p": () => [
-			sprite("pile", {
+			sprite("pile-next", {
 				width: 64,
 				height: 64
 			}),
@@ -254,14 +254,14 @@ export default function levelTiles(player)
 				{
 					this.wait(rand(3, 15), () => {
 						add([
-							sprite("rat", {
+							sprite("karat-next", {
                                 width: 32
                             }),
 							enemy(1),
 							anchor("center"),
 							pos(this.pos.add(center().sub(12 * 64, 6 * 64))),
 							area({scale: 0.5}),
-							moveTowardsPlayer(400, player),
+							moveTowardsPlayer(600, player, 0.5),
 							z(1),
 							{
 								add()
@@ -274,7 +274,7 @@ export default function levelTiles(player)
 						]);
 
 						add([
-							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+							sprite(chance(0.33) ? "dirt0-next" : chance(0.5) ? "dirt1-next" : "dirt3-next", {
 								width: 64,
 								height: 64
 							}),
@@ -293,7 +293,7 @@ export default function levelTiles(player)
 
 
 		"o": () => [
-			sprite("hole", {
+			sprite("hole-next", {
 				width: 64,
 				height: 64
 			}),
@@ -307,7 +307,7 @@ export default function levelTiles(player)
 				{
 					this.wait(rand(3, 15), () => {
 						add([
-							sprite("bats", {
+							sprite("bats-next", {
                                 width: 64,
 								anim: "bats"
                             }),
@@ -317,15 +317,15 @@ export default function levelTiles(player)
 							area({scale: 0.5}),
 							body(),
 							moveTowardsPlayer(100, player),
-							splitOnDeath(4, (position) => [
-								sprite("bat", {
+							splitOnDeath(6, (position) => [
+								sprite("bat-next", {
 									width: 20,
 									anim: "bat"
 								}),
 								pos(position),
 								area({scale: 0.5}),
-								enemy(2),
-								moveTowardsPlayer(100, player),
+								enemy(1),
+								moveTowardsPlayer(200, player, 1),
 							]),
 							z(1),
 							{
@@ -339,7 +339,7 @@ export default function levelTiles(player)
 						]);
 
 						add([
-							sprite(chance(0.33) ? "dirt0" : chance(0.5) ? "dirt1" : "dirt3", {
+							sprite(chance(0.33) ? "dirt0-next" : chance(0.5) ? "dirt1-next" : "dirt3-next", {
 								width: 64,
 								height: 64
 							}),

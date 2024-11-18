@@ -83,9 +83,11 @@ export default function collectable(info, ability, player)
                 let onClickBackground = onClick(() => {
                     destroy(background);
                     destroy(this);
-
+                    
+                    destroyAll("player-current-ability");
                     player.add([
-                        cooldown(ability.time, ability.spriteName, ability.abilityCondition, ability.ability, player)
+                        cooldown(ability.time, ability.spriteName, ability.abilityCondition, ability.ability, player),
+                        "player-current-ability"
                     ]);
 
                     destroyAll("collect-text");

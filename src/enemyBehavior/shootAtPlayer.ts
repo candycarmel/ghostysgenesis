@@ -19,6 +19,11 @@ export default function shootAtPlayer(player, projectile, interval, speed, homin
                     add([
                         ...projectile(),
                         {
+                            add()
+                            {
+                                wait(3, () => destroy(this))
+                            },
+
                             update()
                             {
                                 this.pos = this.pos.add(Vec2.fromAngle(player.pos.angle(enemy.pos)).scale(speed * dt()));

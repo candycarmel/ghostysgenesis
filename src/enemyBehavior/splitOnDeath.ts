@@ -6,7 +6,7 @@ export default function splitOnDeath(amount, enemy)
         destroy()
         {
             for (let i = 0; i < amount; i++)
-                add(enemy());
+                add(enemy(this.pos));
         }
     }
 }

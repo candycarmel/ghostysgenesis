@@ -3,8 +3,10 @@ import ccbody from "../components/ccbody";
 export default function createHomingOrb(player)
 {
 	let orb = add([
-		circle(20),
-		color(WHITE),
+		sprite("orb", {
+			width: 20,
+			height: 20
+		}),
 		anchor("center"),
 		area({collisionIgnore: ["player-collider", "level-thing"]}),
 		body(),

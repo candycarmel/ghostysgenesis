@@ -42,8 +42,6 @@ export default function createBow(player)
     bow.pos = player.pos.add(Vec2.fromAngle(toMouseAngle).scale(30));
     bow.angle = toMouseAngle;
     
-    debug.log(toMouseAngle);
-    
     scaleRect.pos = player.pos.add(Vec2.fromAngle(toMouseAngle).normal().scale(35 * ((toMouseAngle < -90 && toMouseAngle > -180) || (toMouseAngle < 180 && toMouseAngle > 90) ? -1 : 1)).add(Vec2.fromAngle(toMouseAngle).scale(50)));
     
     scaleRect.angle = toMouseAngle;
@@ -101,8 +99,6 @@ export default function createBow(player)
                 let damageDone = Math.floor(this.speed / 800);
 
                 enemy.health -= damageDone;
-
-                this.speed -= 300;
             });
           }
         }
