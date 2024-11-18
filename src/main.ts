@@ -18,7 +18,10 @@ import nextLevelPrefs from "./nextLevelPrefs";
 import addRandomCollectable from "./addRandomCollectable";
 import dialogue from "./dialogue";
 
-kaplay();
+kaplay({
+	width: window.screen.width,
+	height: window.screen.height/* standard windows titlebar size */,
+});
 
 loadStuffs();
 loadBean();
@@ -240,11 +243,15 @@ curMusic = play("music", {loop: true, volume: 0.1});
 		z(1),
 	]);
 
+	let stopIt = add([
+		"enemy"
+	])
+
 	coffin.onAnimEnd((anim) => {
 		if (anim != "open")
 			return;
-
 		addRandomCollectable(player);
+		destroy(stopIt);
 
 		for (let i = 0; i < 5; i++)
 			hearts.push(add([

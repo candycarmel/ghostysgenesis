@@ -7,6 +7,7 @@ export default function collectable(info, ability, player)
 
         add()
         {
+            this.use("enemy");
             let collectable = this;
 
 
