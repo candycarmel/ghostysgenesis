@@ -171,9 +171,8 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.acc.y = this.PLAYER_ACC;
 					this.vel.y = clamp(0, this.vel.y, this.PLAYER_SPEED);
 				} else {
-					// Apply friction or slow down vertically when no input
 					this.acc.y = 0;
-					this.vel.y *= 0.95;  // Adjust friction as needed
+					this.vel.y *= Math.pow(0.05, dt());
 				}
 
 				// Handle horizontal movement
@@ -184,9 +183,8 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.acc.x = this.PLAYER_ACC;
 					this.vel.x = clamp(0, this.vel.x, this.PLAYER_SPEED);
 				} else {
-					// Apply friction or slow down horizontally when no input
 					this.acc.x = 0;
-					this.vel.x *= 0.95;  // Adjust friction as needed
+					this.vel.x *= Math.pow(0.05, dt());
 				}
 			},
 
@@ -401,7 +399,7 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.vel.y = clamp(0, this.vel.y, this.PLAYER_SPEED);
 				} else {
 					this.acc.y = 0;
-					this.vel.y *= 0.95;
+					this.vel.y *= Math.pow(0.05, dt());
 				}
 
 				// Handle horizontal movement
@@ -413,7 +411,7 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.vel.x = clamp(0, this.vel.x, this.PLAYER_SPEED);
 				} else {
 					this.acc.x = 0;
-					this.vel.x *= 0.95;  
+					this.vel.x *= Math.pow(0.05, dt()); 
 				}
 			},
 
