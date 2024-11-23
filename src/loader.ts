@@ -184,4 +184,12 @@ function loadStuffs()
 
     loadSound("music", "music.mp3");
     loadSound("boss", "boss.mp3");
+
+    loadSound("gate", "gate.mp3");
+
+    loadSound("hit", "hitHurt.wav");
+
+    loadSound("enemyHit", "enemyHit.wav");
+
+    loadSound("heal", "heal.wav");
 }

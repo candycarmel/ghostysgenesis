@@ -37,7 +37,7 @@ export default function createBow(player)
   
   let updateThing = onUpdate(() => {
     
-    let toMouseAngle = mousePos().angle(player.pos);
+    let toMouseAngle = toWorld(mousePos()).angle(player.pos);
 
     bow.pos = player.pos.add(Vec2.fromAngle(toMouseAngle).scale(30));
     bow.angle = toMouseAngle;
@@ -96,8 +96,9 @@ export default function createBow(player)
           add()
           {
             this.onCollide("enemy", (enemy) => {
-                let damageDone = Math.floor(this.speed / 800);
-
+                let damageDone = Math.floor(this.speed / 600);
+                play("enemyHit");
+                damageDone = clamp(damageDone, 0.5, 100);
                 enemy.health -= damageDone;
             });
           }

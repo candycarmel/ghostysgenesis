@@ -18,6 +18,7 @@ export default function createAxe(player)
 
 				this.onCollide("enemy", (enemy) => {
 					enemy.health -= 1;
+					play("enemyHit");
 				});
 			}
 		}

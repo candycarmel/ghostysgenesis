@@ -206,6 +206,7 @@ curMusic = play("music", {loop: true, volume: 0.1});
 
 					if (!heart.lost)
 					{
+						play("hit");
 						heart.hurt();
 						hurt = true;
 						break;
@@ -222,9 +223,17 @@ curMusic = play("music", {loop: true, volume: 0.1});
 
 			heal()
 			{
-				hearts.forEach((heart) => {
-					heart.heal();
-				});
+				for (let i = 0; i < hearts.length; i++)
+				{
+					let heart = hearts[i];
+
+					if (heart.lost)
+					{
+						play("heal");
+						heart.heal();
+						break;
+					}
+				}
 			}
 		}
 	]);
@@ -290,8 +299,6 @@ curMusic = play("music", {loop: true, volume: 0.1});
 			if (coffin.exists())
 				destroy(coffin);
 			destroy(curLevel);
-
-			player.heal();
 
 			player.pos = center();
 
@@ -393,9 +400,8 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.acc.y = this.PLAYER_ACC;
 					this.vel.y = clamp(0, this.vel.y, this.PLAYER_SPEED);
 				} else {
-					// Apply friction or slow down vertically when no input
 					this.acc.y = 0;
-					this.vel.y *= 0.95;  // Adjust friction as needed
+					this.vel.y *= 0.95;
 				}
 
 				// Handle horizontal movement
@@ -406,9 +412,8 @@ curMusic = play("music", {loop: true, volume: 0.1});
 					this.acc.x = this.PLAYER_ACC;
 					this.vel.x = clamp(0, this.vel.x, this.PLAYER_SPEED);
 				} else {
-					// Apply friction or slow down horizontally when no input
 					this.acc.x = 0;
-					this.vel.x *= 0.95;  // Adjust friction as needed
+					this.vel.x *= 0.95;  
 				}
 			},
 
@@ -428,6 +433,7 @@ curMusic = play("music", {loop: true, volume: 0.1});
 
 					if (!heart.lost)
 					{
+						play("hit");
 						heart.hurt();
 						hurt = true;
 						break;
@@ -444,9 +450,17 @@ curMusic = play("music", {loop: true, volume: 0.1});
 
 			heal()
 			{
-				hearts.forEach((heart) => {
-					heart.heal();
-				});
+				for (let i = 0; i < hearts.length; i++)
+				{
+					let heart = hearts[i];
+
+					if (heart.lost)
+					{
+						play("heal");
+						heart.heal();
+						break;
+					}
+				}
 			}
 		}
 	]);
@@ -463,7 +477,6 @@ curMusic = play("music", {loop: true, volume: 0.1});
 		if (player.pos.y < center().sub(12 * 64, 6 * 64).y)
 		{
 			destroy(curLevel);
-			player.heal();
 			if (levelsCleared == 10)
 			{
 				go("cutscene1");
@@ -556,7 +569,7 @@ curMusic = play("music", {loop: true, volume: 0.1});
 scene("end", (textyyy) => {
 	curMusic.stop()
 
-curMusic = play("boss", {loop: true});
+curMusic = play("boss", {loop: true, volume: 0.1});
 	onUpdate(() => setCursor("default"));
 
 	add([

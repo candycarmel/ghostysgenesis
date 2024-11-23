@@ -1,6 +1,6 @@
 export default function createDaggers(player)
 {
-  let toMouseAngle = mousePos().angle(player.pos);
+  let toMouseAngle = toWorld(mousePos()).angle(player.pos);
   
   for (let i = -5; i <= 5; i += 5)
   {
@@ -21,8 +21,9 @@ export default function createDaggers(player)
         add()
         {
             this.onCollide("enemy", (enemy) => {
-                enemy.health--;
+                enemy.health -= 0.5;
                 this.health--;
+                play("enemyHit");
 
                 if (this.health == 0)
                   destroy(this);

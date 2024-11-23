@@ -15,6 +15,7 @@ export default function createSword(player)
 			{
 				this.onCollide("enemy", (enemy) => {
 					enemy.health -= 1;
+					play("enemyHit");
 				});
 			}
 		}

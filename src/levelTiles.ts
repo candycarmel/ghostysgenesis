@@ -39,6 +39,7 @@ export default function levelTiles(player)
 
 					if (allEnemies.length == 0 && allGraves.length == 0 && !this.alreadyOpened)
 					{
+						play("gate");
 						this.alreadyOpened = true;
 						// this.sprite = "gate-open";
 						this.use(sprite("gate-open", {
